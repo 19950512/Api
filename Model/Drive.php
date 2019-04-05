@@ -4,16 +4,25 @@
 		"AUTHOR":"Matheus Maydana",
 		"CREATED_DATA": "08/02/2019",
 		"CONTROLADOR": "Model DRIVE",
-		"LAST EDIT": "08/02/2019",
-		"VERSION":"0.0.1"
+		"LAST EDIT": "05/04/2019",
+		"VERSION":"0.0.2"
 	}
 */
 
-// Aqui fica todas as informações/models da API, TÁ TUDO AQUI!
 class Drive {
+
+	public $_conexao;
 
 	function __construct(){
 
+		/* Pega as credenciais para a conexao */
+		$config_conexao = postgreSQL();
+
+		/* Manda as configurações para a conexão */
+		$con = new Conexao_Conexao($config_conexao['host'], $config_conexao['db'], $config_conexao['user'], $config_conexao['pass'], $config_conexao['port']);
+
+		/* Tenta conexão */
+		$this->_conexao = $con->con();
 	}
 
 	function checkOrigin(){

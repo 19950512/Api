@@ -8,6 +8,7 @@
 		"VERSION": "0.0.1"
 	}
 */
+require_once'Senha.php';
 
 class Api {
 

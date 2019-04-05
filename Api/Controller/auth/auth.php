@@ -12,6 +12,8 @@ class Auth {
 
 	public $_nucleo;
 
+	public $_drive;
+
 	private $_auth;
 
 	private $JWT;
@@ -23,7 +25,10 @@ class Auth {
 	private $algoritimo = 'HS256';
 
 	function __construct($nucleo){
+
 		$this->_nucleo = $nucleo;
+
+		$this->_drive = new Drive;
 
 		/* Key openssl */
 		$this->privateKey = $this->getPrivateKey();
@@ -34,6 +39,7 @@ class Auth {
 
 		/* Instancia o JWT */
 		$this->JWT = new JWT;
+
 	}
 
 	function index(){
