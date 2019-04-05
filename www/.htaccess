@@ -1,0 +1,23 @@
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php [L]
+</IfModule>
+
+RewriteCond %{HTTP_HOST} ^api.abigor.com.br [NC]
+RewriteCond %{SERVER_PORT} 80 
+RewriteRule ^(.*)$ https://api.abigor.com.br/$1 [R,L]
+
+
+<ifModule mod_expires.c>
+	ExpiresActive On
+	ExpiresDefault A0
+	ExpiresByType image/gif A2592000
+	ExpiresByType image/png A2592000
+	ExpiresByType image/jpg A2592000
+	ExpiresByType image/jpeg A2592000
+	ExpiresByType image/ico A2592000
+</ifModule>
