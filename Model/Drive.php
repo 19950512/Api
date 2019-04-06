@@ -5,15 +5,26 @@
 		"CREATED_DATA": "08/02/2019",
 		"CONTROLADOR": "Model DRIVE",
 		"LAST EDIT": "06/04/2019",
-		"VERSION":"0.0.3"
+		"VERSION":"0.0.4"
 	}
 */
 
-class Drive {
+class Drive extends Auth_Auth {
 
 	public $_conexao;
 
+	public $_hash;
+
+	public $privateKey;
+
+	public $getPublicKey;
+
+	public $algoritimo = 'HS256';
+
 	function __construct(){
+
+		/* Check header para conversar com a API, PRECISA DISSO!! */
+		$this->checkHeaders();
 
 		/* Pega as credenciais para a conexao */
 		$config_conexao['host'] = '';
@@ -32,6 +43,31 @@ class Drive {
 
 		/* Tenta conexão */
 		$this->_conexao = $con->con();
+
+		/* Criptografia da API */
+		$this->_hash = new Hash;
+
+		/* Key openssl */
+		$this->privateKey = $this->authGetPrivateKey();
+
+		$this->publicKey = $this->authGetPublicKey();
+
+		/* Instancia o JWT */
+		$this->JWT = new JWT;
+
+	}
+
+	/*
+		Para conversar com a API, precisa-se do header Maydana => Lindo, gostoso e ticudo
+	*/
+	function checkHeaders(){
+
+		/* Se não houver o header MAYDANA OU o valor do header for DIFERENTE DE */
+		if(!isset($_SERVER[HEADER_PERMISSAO]) or $_SERVER[HEADER_PERMISSAO] !== HEADER_PERMISSAO_VALOR){
+
+			echo json('no', MSG_HEADERLESS);
+			exit;
+		}
 	}
 
 	function checkOrigin(){

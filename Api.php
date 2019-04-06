@@ -5,7 +5,7 @@
 		"CREATED": "07/02/2019",
 		"NOME": "APIV2",
 		"LAST_EDIT": "06/05/2019",
-		"VERSION": "0.0.2"
+		"VERSION": "0.0.3"
 	}
 */
 
@@ -256,9 +256,11 @@ function json($res, $data){
 	);
 }
 
+/* Caso tentem acessar uma action private/protected */
 class Sempermissao{
 
-	function __construct($e){
-		new de($e);
+	function __construct($mensagem){
+		echo json('no', $mensagem);
+		exit;
 	}
 }
