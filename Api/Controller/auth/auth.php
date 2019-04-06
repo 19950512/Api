@@ -4,8 +4,8 @@
 		"AUTHOR":"Matheus Maydana",
 		"CREATED_DATA": "14/08/2018",
 		"CONTROLADOR": "Auth",
-		"LAST EDIT": "18/08/2018",
-		"VERSION":"0.0.2"
+		"LAST EDIT": "06/05/2018",
+		"VERSION":"0.0.3"
 	}
 */
 class Auth {
@@ -39,7 +39,6 @@ class Auth {
 
 		/* Instancia o JWT */
 		$this->JWT = new JWT;
-
 	}
 
 	function index(){
@@ -161,4 +160,15 @@ B2zNzvrlgRmgBrklMTrMYgm1NPcW+bRLGcwgW2PTvNM=
 EOD;
 
 	}
+
+    public function __call($method, $args) {
+
+		$trace = debug_backtrace();
+		$class = $trace[1]['class'];
+		if(method_exists($class, $method)){
+			return  $this->$method();
+		}
+
+        throw new Sempermissao('Action não pode ser acessada');
+    }
 }

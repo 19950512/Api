@@ -4,13 +4,17 @@
 		"AUTHOR": "Matheus Maydana",
 		"CREATED": "07/02/2019",
 		"NOME": "APIV2",
-		"LAST_EDIT": "07/02/2019",
-		"VERSION": "0.0.1"
+		"LAST_EDIT": "06/05/2019",
+		"VERSION": "0.0.2"
 	}
 */
-require_once'Senha.php';
 
-class Api {
+if(is_file(DIR.'Senha.php')){
+
+	require_once DIR.'Senha.php';
+}
+
+class Api{
 
 	public $controler 	= 'index';
 	public $action		= 'index';
@@ -24,7 +28,6 @@ class Api {
 	public $_ip			= '---.---.-.---';
 
 	function __construct(){
-
 
 		header('Access-Control-Allow-Origin: *');
 		header('Content-Type: application/json; charset=utf-8');
@@ -54,8 +57,10 @@ class Api {
 
 				require_once (DIR.SUBDOMINIO.'/Controller/index/index.php');
 			
-			} catch (PDOException $e) {
+			} catch (Exception $e) {
 
+				
+				new de('ERRO: '. $e);
 				/**
 				** Caso controlador não seja encontrado
 				**/
@@ -87,14 +92,24 @@ class Api {
 						require_once (DIR.SUBDOMINIO.'/Controller/index/index'.'.php');
 					}
 
-				} catch (PDOException $e) {
+				} catch (Exception $e) {
 
+					new de('ERRO: '. $e);
 					/**
 					** Caso controlador não seja encontrado
 					**/
 				}
 
-				$controlador = new $this->controler($this);
+				try {
+					
+					$controlador = new $this->controler($this);
+	
+				} catch (Exception $e) {
+					
+					new de('ERRO: '. $e);
+
+				}
+
 
 				// VERIFICA SE EXISTE A ACTION NO CONTROLADOR,
 				if(isset($this->url[2]) and !empty($this->url[2])){
@@ -104,8 +119,16 @@ class Api {
 					if(method_exists($controlador, $action)){
 
 						$this->action 	  = $action;
-						// AQUI EXECUTA A ACTION EXISTENTE NO CONTROLADOR E NA URL
-						$controlador->{$this->action}();
+
+						try {
+							
+							// AQUI EXECUTA A ACTION EXISTENTE NO CONTROLADOR E NA URL
+							$controlador->{$this->action}();
+
+						} catch (Exception $e) {
+
+							new de('ERRO: '. $e);							
+						}
 
 					}else{
 						// ACTION NÃO ENCONTRADA / 404!
@@ -231,4 +254,11 @@ function json($res, $data){
 			)*/
 		)
 	);
+}
+
+class Sempermissao{
+
+	function __construct($e){
+		new de($e);
+	}
 }

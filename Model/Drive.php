@@ -4,8 +4,8 @@
 		"AUTHOR":"Matheus Maydana",
 		"CREATED_DATA": "08/02/2019",
 		"CONTROLADOR": "Model DRIVE",
-		"LAST EDIT": "05/04/2019",
-		"VERSION":"0.0.2"
+		"LAST EDIT": "06/04/2019",
+		"VERSION":"0.0.3"
 	}
 */
 
@@ -16,7 +16,16 @@ class Drive {
 	function __construct(){
 
 		/* Pega as credenciais para a conexao */
-		$config_conexao = postgreSQL();
+		$config_conexao['host'] = '';
+		$config_conexao['db'] = '';
+		$config_conexao['user'] = '';
+		$config_conexao['pass'] = '';
+		$config_conexao['port'] = '';
+
+		/* Check se existe os dados para conexão*/
+		if(function_exists('postgreSQL')){
+			$config_conexao = postgreSQL();
+		}
 
 		/* Manda as configurações para a conexão */
 		$con = new Conexao_Conexao($config_conexao['host'], $config_conexao['db'], $config_conexao['user'], $config_conexao['pass'], $config_conexao['port']);
