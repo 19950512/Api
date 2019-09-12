@@ -4,8 +4,8 @@
 		"AUTHOR":"Matheus Maydana",
 		"CREATED_DATA": "05/04/2019",
 		"CONTROLADOR": "Model Conexão",
-		"LAST EDIT": "05/04/2019",
-		"VERSION":"0.0.1"
+		"LAST EDIT": "12/09/2019",
+		"VERSION":"0.0.2"
 	}
 */
 class Conexao_Conexao {
@@ -38,6 +38,8 @@ class Conexao_Conexao {
 
 			// POSTGRES
 			$PDO = new PDO('pgsql:host='.$this->host.' dbname='.$this->db.' user='.$this->user.' password='.$this->pass.' port='.$this->port.'');
+    		$PDO->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
 			return $PDO;
 
 		}catch(PDOException $e){
