@@ -4,8 +4,8 @@
 		"AUTHOR":"Matheus Maydana",
 		"CREATED_DATA": "08/02/2019",
 		"CONTROLADOR": "Model DRIVE",
-		"LAST EDIT": "06/04/2019",
-		"VERSION":"0.0.4"
+		"LAST EDIT": "13/09/2019",
+		"VERSION":"0.0.5"
 	}
 */
 
@@ -61,6 +61,11 @@ class Drive extends Auth_Auth {
 		Para conversar com a API, precisa-se do header Maydana => Lindo, gostoso e ticudo
 	*/
 	function checkHeaders(){
+
+		if(PRODUCAO === false){
+			return false;
+		}
+
 
 		/* Se não houver o header MAYDANA OU o valor do header for DIFERENTE DE */
 		if(!isset($_SERVER[HEADER_PERMISSAO]) or $_SERVER[HEADER_PERMISSAO] !== HEADER_PERMISSAO_VALOR){

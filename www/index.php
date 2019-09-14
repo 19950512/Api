@@ -5,6 +5,8 @@
 **/
 define('DIR', '../');
 
+define('PRODUCAO', false);
+
 define('SUBDOMINIO', 'Api');
 define('DIR_CLASS', '');
 

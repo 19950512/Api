@@ -4,11 +4,14 @@
 		"AUTHOR":"Matheus Maydana",
 		"CREATED_DATA": "07/02/2019",
 		"CONTROLADOR": "Model Auth",
-		"LAST EDIT": "07/02/2019",
-		"VERSION":"0.0.2"
+		"LAST EDIT": "13/09/2019",
+		"VERSION":"0.0.3"
 	}
 */
 class Auth_Auth {
+
+	public $_iss = "abigor.com.br";
+	public $_aud = "api.abigor.com.br";
 
 	/* Registra uma nova conta na API / account */
 	function authRegister($data){
@@ -119,11 +122,11 @@ class Auth_Auth {
 			aud (audience) = Destinatário do token, representa a aplicação que irá usá-lo.
 		*/
 		$token = array(
-		    "iss" => "abigor.com.br",
-		    "aud" => "api.abigor.com.br",
+		    "iss" => $this->_iss,
+		    "aud" => $this->_aud,
 		    "iat" => time(), // Momento inicial - gerou o token
 		    "nbf" => time() + 300, // momento que o token PODE SER UTILIZADO
-            "exp" => time() + 6900 // 2horas e 5min para expirar
+	        "exp" => time() + 6900 // 2horas e 5min para expirar
 		);
 
 		/* $jwt armazem o token */
@@ -132,13 +135,17 @@ class Auth_Auth {
 		return $jwt;
 	}
 
-	private function authDecodeToken($string){
+	public function authVerify($string){
 		/*
 			Decodificar o Token
 		*/
 		$jwt = $this->JWT->decode($string, $this->privateKey, array($this->algoritimo));
 
-		return $jwt;
+		if(isset($jwt->iss, $jwt->aud) AND $jwt->iss === $this->_iss AND $jwt->aud === $this->_aud){
+			return true;
+		}
+
+		return false;
 	}
 
 	protected function authGetPublicKey(){

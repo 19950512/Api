@@ -4,8 +4,8 @@
 		"AUTHOR":"Matheus Maydana",
 		"CREATED_DATA": "14/08/2018",
 		"CONTROLADOR": "Auth",
-		"LAST EDIT": "06/05/2018",
-		"VERSION":"0.0.4"
+		"LAST EDIT": "13/09/2019",
+		"VERSION":"0.0.5"
 	}
 */
 class Auth {
@@ -74,6 +74,24 @@ class Auth {
 		/* 
 			Valida e verifica o token de acesso à API
 		*/
+		// Se existir TOKEN, vamos em frente
+		if(isset($_POST['acc_token']) and !empty($_POST['acc_token'])){
+
+			// Verifica se o Token está válido, TRUE = SIM, FALSE = NÃO
+			$token = $this->_drive->authVerify($_POST['acc_token']);
+
+			$token = ($token === true) ? 'Válido' : 'Inválido';
+
+			/* Retorna o Token para o usuário */
+			echo json('ok', array(
+					"token" => $token,
+				)
+			);
+			exit;
+		}
+
+		echo json('no', 'Ops, para verificar um token, você precisa informar seu Token!');
+		exit;
 	}
 
 	function getToken(){
