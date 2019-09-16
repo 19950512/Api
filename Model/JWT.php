@@ -4,6 +4,10 @@ class JWT {
 
 	public $leeway = 120;
 
+	public $valido = true;
+
+	public $mensagem = '';
+
 	public $timestamp = null;
 
 	public $supported_algs = array(
@@ -20,19 +24,20 @@ class JWT {
 		$timestamp = is_null($this->timestamp) ? time() : $this->timestamp;
 
 		$erro = 0;
-		$mensagem = '';
 
 		if (empty($key)){
 
 			$erro = 1;
-			$mensagem = 'A Chave não pode estar vazia';
+			$this->valido = false;
+			$this->mensagem = 'A Chave não pode estar vazia';
 		}
 
 		$tks = explode('.', $jwt);
 		if (count($tks) != 3){
 
 			$erro = 1;
-			$mensagem = 'Número de seguimentos errado!';
+			$this->valido = false;
+			$this->mensagem = 'Número de seguimentos errado!';
 		}
 
 
@@ -40,59 +45,69 @@ class JWT {
 
 		if(null === ($header = $this->jsonDecode($this->urlsafeB64Decode($headb64)))){
 			$erro = 1;
-			$mensagem = 'Invalid header encoding';
+			$this->valido = false;
+			$this->mensagem = 'Invalid header encoding';
 		}
 
 		if(null === $payload = $this->jsonDecode($this->urlsafeB64Decode($bodyb64))){
 			$erro = 1;
-			$mensagem = 'Invalid claims encoding';
+			$this->valido = false;
+			$this->mensagem = 'Invalid claims encoding';
 		}
 
 		if(false === ($sig = $this->urlsafeB64Decode($cryptob64))) {
 			$erro = 1;
-			$mensagem = 'Invalid signature encoding';
+			$this->valido = false;
+			$this->mensagem = 'Invalid signature encoding';
 		}
 
 		if(empty($header->alg)){
 			$erro = 1;
-			$mensagem = 'Algoritimo vazio';
+			$this->valido = false;
+			$this->mensagem = 'Algoritimo vazio';
 		}
 
 		if(empty($this->supported_algs[$header->alg])){
 			$erro = 1;
-			$mensagem = 'Algoritimo não suportado';
+			$this->valido = false;
+			$this->mensagem = 'Algoritimo não suportado';
 		}
 
 		if(!in_array($header->alg, $allowed_algs)) {
 			$erro = 1;
-			$mensagem = 'Algoritimo não permitido';
+			$this->valido = false;
+			$this->mensagem = 'Algoritimo não permitido';
 		}
 
 		if(is_array($key) || $key instanceof \ArrayAccess){
 			if (isset($header->kid)) {
 				if (!isset($key[$header->kid])){
 					$erro = 1;
-					$mensagem = '"kid" invalid, unable to lookup correct key';
+					$this->valido = false;
+					$this->mensagem = '"kid" invalid, unable to lookup correct key';
 				}
 				$key = $key[$header->kid];
 
 			} else {
 				$erro = 1;
-				$mensagem = '"kid" empty, unable to lookup correct key';
+				$this->valido = false;
+				$this->mensagem = '"kid" empty, unable to lookup correct key';
 			}
 		}
 
 		// Check the signature
 		if(!$this->verify("$headb64.$bodyb64", $sig, $key, $header->alg)){
 			$erro = 1;
-			$mensagem = 'Token inválido';
+			$this->valido = false;
+			$this->mensagem = 'Token inválido';
 		}
 
 		// Check if the nbf if it is defined. This is the time that the
 		// token can actually be used. If it's not yet that time, abort.
 		if(isset($payload->nbf) and $payload->nbf > ($timestamp + $this->leeway)){
 			$erro = 1;
-			$mensagem = 'Seu token só será liberado depois das ' . date(DateTime::ISO8601, $payload->nbf);
+			$this->valido = false;
+			$this->mensagem = 'Seu token só será liberado depois das ' . date(DateTime::ISO8601, $payload->nbf);
 		}
 
 		// Check that this token has been created before 'now'. This prevents
@@ -100,18 +115,20 @@ class JWT {
 		// correctly used the nbf claim).
 		if(isset($payload->iat) and $payload->iat > ($timestamp + $this->leeway)){
 			$erro = 1;
-			$mensagem = 'Seu token só será liberado depois das ' . date(DateTime::ISO8601, $payload->iat);
+			$this->valido = false;
+			$this->mensagem = 'Seu token só será liberado depois das ' . date(DateTime::ISO8601, $payload->iat);
 		}
 
 		// Check if this token has expired.
 		if(isset($payload->exp) and ($timestamp - $this->leeway) >= $payload->exp){
 			$erro = 1;
-			$mensagem = 'Token expirado!';
+			$this->valido = false;
+			$this->mensagem = 'Token expirado!';
 		}
 
 		if($erro === 1){
 
-			return $mensagem;
+			return $this->mensagem;
 		}
 
 		return $payload;

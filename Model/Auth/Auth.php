@@ -141,11 +141,7 @@ class Auth_Auth {
 		*/
 		$jwt = $this->JWT->decode($string, $this->privateKey, array($this->algoritimo));
 
-		if(isset($jwt->iss, $jwt->aud) AND $jwt->iss === $this->_iss AND $jwt->aud === $this->_aud){
-			return true;
-		}
-
-		return false;
+		return $this->JWT->valido ? true : false;
 	}
 
 	protected function authGetPublicKey(){
